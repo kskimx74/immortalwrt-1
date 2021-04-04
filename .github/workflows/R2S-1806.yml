@@ -42,7 +42,9 @@ jobs:
       id: build
       run: |
         cd "/home/runner/immortalwrt"
-        cp -f "${GITHUB_WORKSPACE}/configs/1806-config.seed" ".config"
+        sudo cp -f "${GITHUB_WORKSPACE}/configs/1806-config.seed" "/home/runner/immortalwrt/.config"
+        sudo cp -f "${GITHUB_WORKSPACE}/configs/config_generate" "/home/runner/immortalwrt/package/base-files/files/bin/config_generate"
+        sudo sed -n "99,120p" /home/runner/immortalwrt/package/base-files/files/bin/config_generate
         make defconfig
         make -j$[$(nproc)+1]
         df -hP
