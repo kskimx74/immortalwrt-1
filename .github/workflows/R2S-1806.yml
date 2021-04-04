@@ -3,7 +3,9 @@ name: R2S-1806
 on:
   repository_dispatch:
   workflow_dispatch:
-
+  schedule:
+    - cron: 0 23 * * *
+    
 jobs:
   ImmortalWrt-18_06:
     runs-on: ubuntu-18.04
