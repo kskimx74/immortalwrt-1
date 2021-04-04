@@ -1,3 +1,11 @@
+name: r2s-snapshot
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+
+jobs:
   ImmortalWrt-Snapshot:
     runs-on: ubuntu-18.04
     steps:
