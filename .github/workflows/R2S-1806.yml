@@ -89,4 +89,7 @@ jobs:
         name: ${{ steps.tag.outputs.release_date }} R2S-1806
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
+        files: |
+          /home/runner/R2S*.gz
+          /home/runner/R2S*sha256sums
+          /home/runner/immortalwrt/.config
