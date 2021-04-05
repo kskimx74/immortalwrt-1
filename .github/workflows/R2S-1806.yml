@@ -1,9 +1,6 @@
 name: R2S-1806
 
 on:
-  push:
-    branches:
-      - master
   repository_dispatch:
   workflow_dispatch:
   schedule:
