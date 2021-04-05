@@ -87,7 +87,7 @@ jobs:
       run: |
         echo "::set-output name=release_tag::$(date +"%F_%H%M%S")-R2S_1806"
         echo "::set-output name=release_date::$(date +"%F_%H%M%S")"
-        sed -n '3,4'p /home/runner/R2S-18.06-sha256sums >> release.txt
+        cat  release.txt
         echo "::set-output name=status::success"
         
     - name: Upload firmware to release
