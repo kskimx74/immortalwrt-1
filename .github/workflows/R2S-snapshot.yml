@@ -44,29 +44,50 @@ jobs:
         make defconfig
         make -j$[$(nproc)+1]
         df -hP
-        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S-snapshot-ext4-sysupgrade.img.gz"
-        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-snapshot-squashfs-sysupgrade.img.gz"
-        mv -f "bin/targets/rockchip/armv8/sha256sums" "../R2S-snapshot-sha256sums"
+        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S_snapshot-$(date +%F_%H%M%S)-ext4-sysupgrade.img.gz"
+        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S_snapshot-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
+        mv -f "bin/targets/rockchip/armv8/sha256sums" "../R2S_snapshot-sha256sums"
     - name: Rebuild ImmortalWrt-Snapshot to Collect Error Log
       if: failure()
       run: |
         cd /home/runner/immortalwrt
         make -j1 V=s
-        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S-snapshot-ext4-sysupgrade.img.gz"
-        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-snapshot-squashfs-sysupgrade.img.gz"
-        mv -f "bin/targets/rockchip/armv8/sha256sums" "../R2S-snapshot-sha256sums"
+        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S_snapshot-$(date +%F_%H%M%S)-ext4-sysupgrade.img.gz"
+        mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S_snapshot-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
+        mv -f "bin/targets/rockchip/armv8/sha256sums" "../R2S_snapshot-sha256sums"
     - name: Upload ImmortalWrt-Snapshot SHA256SUM Hash
       uses: actions/upload-artifact@v2
       with:
         name: R2S-snapshot-sha256sums
-        path: /home/runner/R2S-snapshot-sha256sums
+        path: /home/runner/R2S_snapshot-sha256sums
     - name: Upload ImmortalWrt-Snapshot EXT4 Firmware
       uses: actions/upload-artifact@v2
       with:
         name: R2S-snapshot-ext4-sysupgrade.img.gz
-        path: /home/runner/R2S-snapshot-ext4-sysupgrade.img.gz
+        path: /home/runner/R2S*.gz
     - name: Upload ImmortalWrt-Snapshot SquashFS Firmware
       uses: actions/upload-artifact@v2
       with:
         name: R2S-snapshot-squashfs-sysupgrade.img.gz
-        path: /home/runner/R2S-snapshot-squashfs-sysupgrade.img.gz
+        path: /home/runner/R2S*.gz
+    - name: Generate release tag
+      id: tag
+      run: |
+        echo "::set-output name=release_tag::$(date +"%F_%H%M%S")-R2S_snapshot"
+        echo "::set-output name=release_date::$(date +"%F_%H%M%S")"
+        cat  release.txt
+        echo "::set-output name=status::success"
+        
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: ${{ steps.tag.outputs.release_date }} R2S_snapshot
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
+        files: |
+          /home/runner/R2S*.gz
+          /home/runner/R2S*sha256sums
+          /home/runner/immortalwrt/.config
