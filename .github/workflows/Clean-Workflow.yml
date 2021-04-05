@@ -2,9 +2,6 @@ name: Clean-Workflow
 
 
 on:
-  push:
-    branches:
-      - master
   repository_dispatch:
   workflow_dispatch:
   schedule:
