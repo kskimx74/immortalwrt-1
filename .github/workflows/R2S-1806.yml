@@ -3,6 +3,8 @@ name: R2S-1806
 on:
   repository_dispatch:
   workflow_dispatch:
+  watch:
+    types: [started]
   schedule:
     - cron: 0 10 * * *
     
