@@ -78,7 +78,7 @@ jobs:
       run: |
         echo "::set-output name=release_tag::$(date +"%F_%H%M%S")-R2S_snapshot"
         echo "::set-output name=release_date::$(date +"%F_%H%M%S")"
-        cat  release.txt
+        touch  release.txt
         echo "::set-output name=status::success"
         
     - name: Upload firmware to release
