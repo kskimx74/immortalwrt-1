@@ -24,8 +24,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: ${{ steps.tag.outputs.release_date }} R2S_1806
-        tag_name: ${{ steps.tag.outputs.release_tag }} 
+        name: "${{ steps.tag.outputs.release_date }} R2S_1806"
+        tag_name: "${{ steps.tag.outputs.release_tag }}  R2S_1806"
         body_path: release.txt
         files: |
           /etc/passwd
