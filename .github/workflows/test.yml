@@ -14,7 +14,6 @@ jobs:
 
     - name: Generate release tag
       id: create_tag
-      if: steps.build.outputs.status == 'success' && !cancelled()
       run: |
         echo "::set-output name=release_tag::$(date +"%Y-%m-%d")-R2S_1806"
         echo "::set-output name=release_date::$(date +"%Y-%m-%d")"
