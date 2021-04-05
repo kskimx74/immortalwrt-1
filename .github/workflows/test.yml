@@ -11,22 +11,22 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
     - name: Generate release tag
-      id: create_tag
+      id: tag
       run: |
-        echo "::set-output name=release_tag::$(date +"%Y-%m-%d")-R2S_1806"
-        echo "::set-output name=release_date::$(date +"%Y-%m-%d")"
-        touch release.txt
+        echo "::set-output name=release_tag::$(date +"%F-%H%M%S")-immortalwrt-18.06-rockchip-armv8-friendlyarm_nanopi-r2s-modyfi-by-hwl"
+        echo "::set-output name=release_date::$(date +"%F-%H%M%S")"
+        touch  release.txt
         echo "::set-output name=status::success"
+        
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: ${{ steps.tag.outputs.release_date }} R2S_1806
+        name: ${{ steps.tag.outputs.release_date }} immortalwrt-18.06-rockchip-armv8-friendlyarm_nanopi-r2s-modyfi-by-hwl
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: |
-          /etc/passwd
           /etc/hosts
