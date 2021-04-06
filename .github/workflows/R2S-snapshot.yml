@@ -3,8 +3,8 @@ name: R2S-snapshot
 on:
   repository_dispatch:
   workflow_dispatch:
-  schedule:
-  - cron: 0 10 * * *
+#   schedule:
+#   - cron: 0 10 * * *
 
 
 jobs:
