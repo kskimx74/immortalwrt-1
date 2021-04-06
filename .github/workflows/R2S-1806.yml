@@ -43,7 +43,7 @@ jobs:
       run: |
         cd "/home/runner/immortalwrt"
         cp -f "${GITHUB_WORKSPACE}/configs/1806-config.seed" ".config"
-        sudo cp -f "${GITHUB_WORKSPACE}/configs/config_generate" "/home/runner/immortalwrt/package/base-files/files/bin/config_generate"
+        sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
