@@ -47,7 +47,8 @@ jobs:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     - name: Build ImmortalWrt-18.06
       id: build
-      run: |    
+      run: |
+        cd "/home/runner/immortalwrt"
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
