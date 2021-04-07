@@ -4,8 +4,8 @@ name: Clean-Workflow
 on:
   repository_dispatch:
   workflow_dispatch:
-  schedule:
-    - cron: 0 0 * * *
+#   schedule:
+#     - cron: 0 0 * * *
 
 jobs:
   Cleanup-Old-Artifacts:
