@@ -41,15 +41,16 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         #sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
-        #cp -f "${GITHUB_WORKSPACE}/configs/seed.config" ".config"
-        #make defconfig
-    - name: Start SSH via tmate
-      uses: P3TERX/ssh2actions@main
-      # Send connection info to Telegram (optional)
-      # You can find related documents here: https://core.telegram.org/bo ts
-      env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        sudo cp -f "${GITHUB_WORKSPACE}/configs/Minimal.seed" ".config"
+        ls -lh ./
+        make defconfig
+#     - name: Start SSH via tmate
+#       uses: P3TERX/ssh2actions@main
+#       # Send connection info to Telegram (optional)
+#       # You can find related documents here: https://core.telegram.org/bo ts
+#       env:
+#         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     - name: Build ImmortalWrt-18.06
       id: build
       run: |
@@ -64,6 +65,7 @@ jobs:
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-ext4-sysupgrade.img.gz"
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
         sudo cp "bin/targets/rockchip/armv8/config.buildinfo" "../config.buildinfo"
+        sudo cp "bin/targets/rockchip/armv8/config.buildinfo" "/home/runner/hwl/r2s_config.buildinfo"
         sudo sha256sum /home/runner/*.gz >> /home/runner/R2S-Minimal_1806-sha256sums
         ls -lh /home/runner/R2S* 
         ls -lh /home/runner/hwl/
