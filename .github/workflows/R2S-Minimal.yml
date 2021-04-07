@@ -28,21 +28,21 @@ jobs:
         sudo -E apt-get clean -y
         sudo -E swapoff -a
         sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android /opt/ghc /swapfile
-        cd "/home/runner"
-        sudo mkdir -p /home/runner/hwl
-        sudo tree /home/runner/
-        df -hP
     - name: Clone Source
       run: |
+        df -hP
+        sudo mkdir -p /home/runner/hwl
+        tree /home/runner/hwl
         cd "/home/runner"
         git clone --branch "openwrt-18.06-k5.4" --single-branch "https://github.com/immortalwrt/immortalwrt" "immortalwrt"
         sudo chown -R runner:runner "immortalwrt"
         cd "/home/runner/immortalwrt"
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        sudo rm -f .config
         #sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
-        sudo cp -f "${GITHUB_WORKSPACE}/configs/Minimal.seed" ".config"
-        ls -lh ./
+        cp -f "${GITHUB_WORKSPACE}/configs/Minimal.seed" ".config"
+        ls -lah ./
         make defconfig
 #     - name: Start SSH via tmate
 #       uses: P3TERX/ssh2actions@main
