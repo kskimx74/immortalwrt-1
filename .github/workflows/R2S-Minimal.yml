@@ -51,6 +51,7 @@ jobs:
         cat .config
         make defconfig
         ls -lah ./
+        echo "defconfig after"
         cat .config
 #     - name: Start SSH via tmate
 #       uses: P3TERX/ssh2actions@main
@@ -64,6 +65,8 @@ jobs:
       run: |
         cd "/home/runner/immortalwrt"
         sudo egrep -v '^$|#' .config
+        sudo cp .config /home/runner/hwl/.config-bak
+        ls -lh /home/runner/hwl/
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
