@@ -5,7 +5,9 @@ on:
   workflow_dispatch:
 #   schedule:
 #     - cron: 0 10 * * *
-    
+
+env:
+  TZ: Asia/Shanghai    
 jobs:
   ImmortalWrt-18_06:
     runs-on: ubuntu-18.04
@@ -16,6 +18,8 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
+        sudo timedatectl set-timezone "$TZ"
+        echo "now":$(date +%F_%H%M%S)
         docker rmi $(docker images -q)
         sudo -E apt-get remove -y --purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell mysql* php* mssql-tools msodbcsql17 android*
         sudo -E apt-get update -y
@@ -30,6 +34,7 @@ jobs:
         sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android /opt/ghc /swapfile
     - name: Clone Source
       run: |
+        echo "now":$(date +%F_%H%M%S)
         df -hP
         sudo mkdir -p /home/runner/hwl
         tree /home/runner/hwl
