@@ -28,6 +28,9 @@ jobs:
         sudo -E apt-get clean -y
         sudo -E swapoff -a
         sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android /opt/ghc /swapfile
+        cd "/home/runner"
+        sudo mkdir -p /home/runner/hwl
+        sudo tree /home/runner/
         df -hP
     - name: Clone Source
       run: |
@@ -51,18 +54,21 @@ jobs:
       id: build
       run: |
         cd "/home/runner/immortalwrt"
+        sudo egrep -v '^$|#' .config
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
         make -j$[$(nproc)+1]
         df -hP
-        cat bin/targets/rockchip/armv8/config.buildinfo
+        sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-ext4-sysupgrade.img.gz"
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
         sudo cp "bin/targets/rockchip/armv8/config.buildinfo" "../config.buildinfo"
         sudo sha256sum /home/runner/*.gz >> /home/runner/R2S-Minimal_1806-sha256sums
-        ls -lh /home/runner/R2S*
+        ls -lh /home/runner/R2S* 
+        ls -lh /home/runner/hwl/
         tree /home/runner/immortalwrt/bin/
+        tree /home/runner/hwl/
         echo "::set-output name=status::success"
     - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
       if: failure()
@@ -114,3 +120,4 @@ jobs:
           /home/runner/R2S*.gz
           /home/runner/R2S*sha256sums
           /home/runner/immortalwrt/.config
+          /home/runner/hwl/*
