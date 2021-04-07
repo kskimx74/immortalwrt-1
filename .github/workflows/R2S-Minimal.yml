@@ -56,8 +56,10 @@ jobs:
         find dl -size -1024c -exec rm -f {} \;
         make -j$[$(nproc)+1]
         df -hP
+        cat bin/targets/rockchip/armv8/config.buildinfo
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-ext4-sysupgrade.img.gz"
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
+        sudo cp "bin/targets/rockchip/armv8/config.buildinfo" "../config.buildinfo"
         sudo sha256sum /home/runner/*.gz >> /home/runner/R2S-Minimal_1806-sha256sums
         ls -lh /home/runner/R2S*
         tree /home/runner/immortalwrt/bin/
@@ -68,8 +70,10 @@ jobs:
         cd "/home/runner/immortalwrt"
         sudo echo "" >   /home/runner/R2S-Minimal_1806-sha256sums
         make -j1 V=s
+        cat bin/targets/rockchip/armv8/config.buildinfo
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-ext4-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-ext4-sysupgrade.img.gz"
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
+        sudo cp "bin/targets/rockchip/armv8/config.buildinfo" "../config.buildinfo"
         sudo sha256sum /home/runner/*.gz >> /home/runner/R2S-Minimal_1806-sha256sums
         ls -lh /home/runner/R2S*
         tree /home/runner/immortalwrt/bin/
