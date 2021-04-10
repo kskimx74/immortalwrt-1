@@ -49,6 +49,7 @@ jobs:
         cp -f "${GITHUB_WORKSPACE}/configs/r2s_config.out" ".config"
         ls -lah ./
         cat .config
+        echo "start make!"
         make defconfig
         ls -lah ./
         echo "defconfig after"
@@ -65,8 +66,9 @@ jobs:
       run: |
         cd "/home/runner/immortalwrt"
         sudo egrep -v '^$|#' .config
-        sudo cp .config /home/runner/hwl/.config-bak
-        ls -lh /home/runner/hwl/
+        ls -lah ./
+        cp .config /home/runner/hwl/R2S_build.config-bak-$(date +%F_%H%M%S)
+        ls -lah /home/runner/hwl/
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -94,7 +96,7 @@ jobs:
         mv -f "bin/targets/rockchip/armv8/immortalwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz" "../R2S-Minimal_1806-$(date +%F_%H%M%S)-squashfs-sysupgrade.img.gz"
         sudo cp "bin/targets/rockchip/armv8/config.buildinfo" "../config.buildinfo"
         sudo sha256sum /home/runner/*.gz >> /home/runner/R2S-Minimal_1806-sha256sums
-        ls -lh /home/runner/R2S*
+        ls -lah /home/runner/R2S*
         tree /home/runner/immortalwrt/bin/
     - name: Upload ImmortalWrt-18.06 SHA256SUM Hash
       uses: actions/upload-artifact@v2
