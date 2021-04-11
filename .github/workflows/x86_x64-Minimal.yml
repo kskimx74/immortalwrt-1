@@ -9,7 +9,7 @@ on:
 env:
   TZ: Asia/Shanghai    
 jobs:
-  ImmortalWrt_x86_x64-18_06:
+  x86_x64-18_06:
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout Repository
