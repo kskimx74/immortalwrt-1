@@ -74,7 +74,7 @@ jobs:
         find dl -size -1024c -exec rm -f {} \;
         make -j$[$(nproc)+1]
         df -hP
-        tree bin/*
+        tree bin/targets/*
     - name: Check Build
       uses: P3TERX/ssh2actions@main
       # Send connection info to Telegram (optional)
