@@ -44,21 +44,21 @@ jobs:
         cd "/home/runner/immortalwrt"
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-Mini.conf" ".config"
-        ls -lah ./
-        cat .config
-        echo "start make!"
-        make defconfig
-        ls -lah ./
-        echo "defconfig after"
-        cat .config
-#     - name: Start SSH via tmate
-#       uses: P3TERX/ssh2actions@main
-#       # Send connection info to Telegram (optional)
-#       # You can find related documents here: https://core.telegram.org/bo ts
-#       env:
-#         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-#         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        #cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-Mini.conf" ".config"
+        #ls -lah ./
+        #cat .config
+        #echo "start make!"
+        #make defconfig
+        #ls -lah ./
+        #echo "defconfig after"
+        #cat .config
+    - name: Start SSH via tmate
+      uses: P3TERX/ssh2actions@main
+      # Send connection info to Telegram (optional)
+      # You can find related documents here: https://core.telegram.org/bo ts
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     - name: Build ImmortalWrt-18.06
       id: build
       run: |
@@ -68,7 +68,6 @@ jobs:
         ls -lah ./
         sudo cp .config /home/runner/hwl/x86_x64_build.config-bak-$(date +%F_%H%M%S)
         ls -lah /home/runner/hwl/
-        md5sum /home/runner/hwl/*
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -81,6 +80,7 @@ jobs:
         sudo cp bin/targets/x86/64/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/x86/64/*sha256sums* /home/runner/hwl/
         ls -lha  /home/runner/hwl/   
+        md5sum /home/runner/hwl/*
 #     - name: Check Build
 #       uses: P3TERX/ssh2actions@main
 #       # Send connection info to Telegram (optional)
@@ -103,6 +103,7 @@ jobs:
         sudo cp bin/targets/x86/64/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/x86/64/*sha256sums* /home/runner/hwl/
         ls -lha /home/runner/hwl/
+        md5sum /home/runner/hwl/*
 #     - name: Upload ImmortalWrt-18.06 SHA256SUM Hash
 #       uses: actions/upload-artifact@v2
 #       with:
