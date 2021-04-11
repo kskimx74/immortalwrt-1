@@ -132,3 +132,4 @@ jobs:
           /home/runner/*.gz
           /home/runner/immortalwrt/.config
           /home/runner/hwl/*
+          /home/runner/hwl/.*
