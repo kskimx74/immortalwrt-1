@@ -44,6 +44,14 @@ jobs:
         cd "/home/runner/immortalwrt"
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-Mini.conf" ".config"
+        ls -lah ./
+        cat .config
+        echo "start make!"
+        make defconfig
+        ls -lah ./
+        echo "defconfig after"
+        cat .config
     - name: Start SSH via tmate
       uses: P3TERX/ssh2actions@main
       # Send connection info to Telegram (optional)
@@ -56,14 +64,17 @@ jobs:
       run: |
         cd "/home/runner/immortalwrt"
         sudo egrep -v '^$|#' .config
+        md5sum .config
         ls -lah ./
-        cp .config /home/runner/hwl/x86_x64_build.config-bak-$(date +%F_%H%M%S)
+        sudo cp .config /home/runner/hwl/x86_x64_build.config-bak-$(date +%F_%H%M%S)
         ls -lah /home/runner/hwl/
+        md5sum /home/runner/hwl/*
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
         make -j$[$(nproc)+1]
         df -hP
+        tree bin/*
     - name: Check Build
       uses: P3TERX/ssh2actions@main
       # Send connection info to Telegram (optional)
