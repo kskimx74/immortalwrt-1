@@ -75,7 +75,8 @@ jobs:
         echo "start backup bin/targets/rockchip/armv8/config.buildinfo"
         sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
         echo "stop backup bin/targets/rockchip/armv8/config.buildinfo"
-        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  /home/runner/immortalwrt/bin/*
+        cd "/home/runner/immortalwrt"
+        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
@@ -90,7 +91,8 @@ jobs:
         sudo echo "" >   /home/runner/R2S-Minimal_1806-sha256sums
         make -j1 V=s
         sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
-        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  /home/runner/immortalwrt/bin/*
+        cd "/home/runner/immortalwrt"
+        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
