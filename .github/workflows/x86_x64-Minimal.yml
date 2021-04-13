@@ -71,7 +71,8 @@ jobs:
         df -hP
         tree bin/targets/*
         ls -lha bin/targets/x86/64  
-        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  /home/runner/immortalwrt/bin/*
+        cd "/home/runner/immortalwrt"
+        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         sudo cp bin/targets/x86/64/immortalwrt-x86-64-* /home/runner/hwl/
         sudo cp bin/targets/x86/64/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/x86/64/*sha256sums* /home/runner/hwl/
