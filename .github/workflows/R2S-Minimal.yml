@@ -41,7 +41,7 @@ jobs:
         cd "/home/runner"
         sudo chown -R runner:runner hwl/
         git clone --branch "openwrt-18.06-k5.4" --single-branch "https://github.com/immortalwrt/immortalwrt" "immortalwrt"
-        cp -f "${GITHUB_WORKSPACE}/configs/R2S_config.out" "/home/runner/immortalwrt/.config"
+        cp -f "${GITHUB_WORKSPACE}/configs/config.out" "/home/runner/immortalwrt/.config"
         sudo chown -R runner:runner "immortalwrt"
         cd "/home/runner/immortalwrt"
         ./scripts/feeds update -a
@@ -65,6 +65,7 @@ jobs:
         sudo wc -l R2S_build.config-bak-*
         sudo cp ./R2S_build.config-bak-* /home/runner/hwl/
         ls -lah /home/runner/hwl/
+        make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
