@@ -39,28 +39,21 @@ jobs:
         sudo mkdir -p /home/runner/hwl
         tree /home/runner/hwl
         cd "/home/runner"
+        sudo chown -R runner:runner hwl/
         git clone --branch "openwrt-18.06-k5.4" --single-branch "https://github.com/immortalwrt/immortalwrt" "immortalwrt"
+        cp -f "${GITHUB_WORKSPACE}/configs/R2S_config.out" "/home/runner/immortalwrt/.config"
         sudo chown -R runner:runner "immortalwrt"
         cd "/home/runner/immortalwrt"
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        #sudo rm -f .config
-        #sudo sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
-        #cp -f "${GITHUB_WORKSPACE}/configs/r2s_config.out" ".config"
-        #ls -lah ./
-        #cat .config
-        #echo "start make!"
-        #make defconfig
-        #ls -lah ./
-        #echo "defconfig after"
-        #cat .config
-    - name: Start SSH via tmate
-      uses: P3TERX/ssh2actions@main
-      # Send connection info to Telegram (optional)
-      # You can find related documents here: https://core.telegram.org/bo ts
-      env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        sudo sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
+#     - name: Start SSH via tmate
+#       uses: P3TERX/ssh2actions@main
+#       # Send connection info to Telegram (optional)
+#       # You can find related documents here: https://core.telegram.org/bo ts
+#       env:
+#         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     - name: Build ImmortalWrt-18.06
       id: build
       run: |
@@ -86,8 +79,8 @@ jobs:
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
-        ls -lh /home/runner/R2S* 
-        ls -lh /home/runner/hwl/
+        ls -lah /home/runner/R2S* 
+        ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
         echo "::set-output name=status::success"
     - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
@@ -101,24 +94,24 @@ jobs:
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
-        ls -lh /home/runner/R2S* 
-        ls -lh /home/runner/hwl/
+        ls -lah /home/runner/R2S* 
+        ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
-    - name: Upload ImmortalWrt-18.06 SHA256SUM Hash
-      uses: actions/upload-artifact@v2
-      with:
-        name: R2S-1806-sha256sums
-        path: /home/runner/*sha256sums*
-    - name: Upload ImmortalWrt-18.06 EXT4 Firmware
-      uses: actions/upload-artifact@v2
-      with:
-        name: R2S-1806-ext4-sysupgrade.img.gz
-        path: /home/runner/R2S*.gz
-    - name: Upload ImmortalWrt-18.06 SquashFS Firmware
-      uses: actions/upload-artifact@v2
-      with:
-        name: R2S-1806-squashfs-sysupgrade.img.gz
-        path: /home/runner/R2S*.gz
+#     - name: Upload ImmortalWrt-18.06 SHA256SUM Hash
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: R2S-1806-sha256sums
+#         path: /home/runner/*sha256sums*
+#     - name: Upload ImmortalWrt-18.06 EXT4 Firmware
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: R2S-1806-ext4-sysupgrade.img.gz
+#         path: /home/runner/R2S*.gz
+#     - name: Upload ImmortalWrt-18.06 SquashFS Firmware
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: R2S-1806-squashfs-sysupgrade.img.gz
+#         path: /home/runner/R2S*.gz
 
     - name: Generate release tag
       id: tag
