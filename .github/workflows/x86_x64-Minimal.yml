@@ -39,19 +39,14 @@ jobs:
         sudo mkdir -p /home/runner/hwl
         tree /home/runner/hwl
         cd "/home/runner"
+        sudo chown -R runner:runner hwl/
         git clone --branch "openwrt-18.06-k5.4" --single-branch "https://github.com/immortalwrt/immortalwrt" "immortalwrt"
+        cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-config.out" "/home/runner/immortalwrt/.config"
         sudo chown -R runner:runner "immortalwrt"
         cd "/home/runner/immortalwrt"
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        #cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-Mini.conf" ".config"
-        #ls -lah ./
-        #cat .config
-        #echo "start make!"
-        #make defconfig
-        #ls -lah ./
-        #echo "defconfig after"
-        #cat .config
+        make defconfig
 #     - name: Start SSH via tmate
 #       uses: P3TERX/ssh2actions@main
 #       # Send connection info to Telegram (optional)
@@ -94,7 +89,7 @@ jobs:
       run: |
         cd "/home/runner/immortalwrt"
         sudo rm -f .config
-        sudo cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-Mini.conf" ".config"
+        cp -f "${GITHUB_WORKSPACE}/configs/x86_x64-config.out" "/home/runner/immortalwrt/.config"
         make -j1 V=s
         tree bin/*
         ls -lha bin/targets/x86/64  
