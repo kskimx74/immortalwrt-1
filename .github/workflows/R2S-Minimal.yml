@@ -67,7 +67,7 @@ jobs:
         cd "/home/runner/immortalwrt"
         sudo egrep -v '^$|#' .config
         ls -lah ./
-        sudo cp .config /home/runner/hwl/R2S_build.config-bak-$(date +%F_%H%M%S)
+        sudo egrep -v '^$|#' .config >> /home/runner/hwl/R2S_build.config-bak-$(date +%F_%H%M%S)
         ls -lah /home/runner/hwl/
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
@@ -76,7 +76,9 @@ jobs:
         df -hP
         tree bin/*
         tree bin/targets/rockchip/armv8/*
+        echo "start backup bin/targets/rockchip/armv8/config.buildinfo"
         sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
+        echo "stop backup bin/targets/rockchip/armv8/config.buildinfo"
         sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  /home/runner/immortalwrt/bin/*
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
