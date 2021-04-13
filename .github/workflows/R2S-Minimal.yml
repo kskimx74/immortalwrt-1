@@ -67,7 +67,10 @@ jobs:
         cd "/home/runner/immortalwrt"
         sudo egrep -v '^$|#' .config
         ls -lah ./
-        sudo egrep -v '^$|#' .config >> /home/runner/hwl/R2S_build.config-bak-$(date +%F_%H%M%S)
+        sudo egrep -v '^$|#' .config | wc -l
+        sudo egrep -v '^$|#' .config >> R2S_build.config-bak-$(date +%F_%H%M%S)
+        sudo wc -l R2S_build.config-bak-*
+        sudo cp ./R2S_build.config-bak-* /home/runner/hwl/
         ls -lah /home/runner/hwl/
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
