@@ -12,8 +12,10 @@ jobs:
   x86_x64-18_06:
     runs-on: ubuntu-18.04
     steps:
+    
     - name: Checkout Repository
       uses: actions/checkout@v2
+      
     - name: Init Building Dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -32,6 +34,7 @@ jobs:
         sudo -E apt-get clean -y
         sudo -E swapoff -a
         sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/local/lib/android /opt/ghc /swapfile
+        
     - name: Clone Source
       run: |
         echo "now":$(date +%F_%H%M%S)
@@ -50,6 +53,7 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         make defconfig
+        
 #     - name: Start SSH via tmate
 #       uses: P3TERX/ssh2actions@main
 #       # Send connection info to Telegram (optional)
@@ -57,6 +61,7 @@ jobs:
 #       env:
 #         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 #         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
     - name: Build ImmortalWrt-18.06
       id: build
       run: |
@@ -81,6 +86,7 @@ jobs:
         sudo cp bin/targets/x86/64/*sha256sums* /home/runner/hwl/
         ls -lha  /home/runner/hwl/   
         md5sum /home/runner/hwl/*
+        
 #     - name: Check Build
 #       uses: P3TERX/ssh2actions@main
 #       # Send connection info to Telegram (optional)
@@ -88,6 +94,7 @@ jobs:
 #       env:
 #         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 #         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
     - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
       if: failure()
       run: |
