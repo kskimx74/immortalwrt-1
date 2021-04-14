@@ -81,11 +81,11 @@ jobs:
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
-        ls -lah /home/runner/R2S* 
         ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
         echo "::set-output name=status::success"
     - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
+      id: Rebuild
       if: failure()
       run: |
         cd "/home/runner/immortalwrt"
@@ -100,6 +100,7 @@ jobs:
         ls -lah /home/runner/R2S* 
         ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
+        echo "::set-output name=status::success"
 #     - name: Upload ImmortalWrt-18.06 SHA256SUM Hash
 #       uses: actions/upload-artifact@v2
 #       with:
@@ -117,6 +118,7 @@ jobs:
 #         path: /home/runner/R2S*.gz
 
     - name: Generate release tag
+      if: steps.build.outputs.status == 'success' or steps.Rebuild.outputs.status == 'success'
       id: tag
       run: |
         echo "::set-output name=release_tag::$(date +"%F_%H%M%S")-R2S-Minimal_1806"
