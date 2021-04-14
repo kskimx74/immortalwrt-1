@@ -77,10 +77,10 @@ jobs:
         sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
         echo "stop backup bin/targets/rockchip/armv8/config.buildinfo"
         cd "/home/runner/immortalwrt"
-        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
+        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
         echo "::set-output name=status::success"
@@ -92,16 +92,18 @@ jobs:
         cd /home/runner/hwl/
         sudo rm -rf ./*
         cd "/home/runner/immortalwrt"
+        sudo rm -rf .config
+        cp -f "${GITHUB_WORKSPACE}/configs/config.out" "/home/runner/immortalwrt/.config"
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         make defconfig
         make -j8 download
         make -j1 V=s
         sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
-        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
+        sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         ls -lah /home/runner/R2S* 
         ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
@@ -127,7 +129,5 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: |
-          /home/runner/R2S*.gz
-          /home/runner/R2S*sha256sums
           /home/runner/immortalwrt/.config
           /home/runner/hwl/*
