@@ -101,24 +101,9 @@ jobs:
         ls -lah /home/runner/hwl/
         tree /home/runner/hwl/
         echo "::set-output name=status::success"
-#     - name: Upload ImmortalWrt-18.06 SHA256SUM Hash
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: R2S-1806-sha256sums
-#         path: /home/runner/*sha256sums*
-#     - name: Upload ImmortalWrt-18.06 EXT4 Firmware
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: R2S-1806-ext4-sysupgrade.img.gz
-#         path: /home/runner/R2S*.gz
-#     - name: Upload ImmortalWrt-18.06 SquashFS Firmware
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: R2S-1806-squashfs-sysupgrade.img.gz
-#         path: /home/runner/R2S*.gz
 
     - name: Generate release tag
-      if: steps.build.outputs.status == 'success' or steps.Rebuild.outputs.status == 'success'
+      if: ${{ success() }}
       id: tag
       run: |
         echo "::set-output name=release_tag::$(date +"%F_%H%M%S")-R2S-Minimal_1806"
