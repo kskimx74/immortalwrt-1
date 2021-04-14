@@ -37,9 +37,12 @@ jobs:
         echo "now":$(date +%F_%H%M%S)
         df -hP
         sudo mkdir -p /home/runner/hwl
-        tree /home/runner/hwl
         cd "/home/runner"
-        sudo chown -R runner:runner hwl/
+        mkdir -pv  artifact/{firmware,package,buildinfo}
+        sudo chown -R runner:runner artifact/
+        sudo chown -R runner:runner hwl/ 
+        ls -lh ./
+        ls -lhR artifact/
         git clone --branch "openwrt-18.06-k5.4" --single-branch "https://github.com/immortalwrt/immortalwrt" "immortalwrt"
         cp -f "${GITHUB_WORKSPACE}/configs/egrep_R2S.config" "/home/runner/immortalwrt/.config"
         sudo chown -R runner:runner "immortalwrt"
@@ -109,7 +112,34 @@ jobs:
         ls -lah /home/runner/hwl/
         md5sum /home/runner/hwl/*
         echo "::set-output name=status::success"
+        
+    - name: Prepare artifact
+      run: |
+        cd /home/runner/
+        rm -rf $(find /home/runner/immortalwrt/bin/targets/ -type d -name "packages")
+        cp -rf $(find /home/runner/immortalwrt/bin/targets/ -type f) ./artifact/firmware/
+        cp -rf $(find /home/runner/immortalwrt/bin/packages/ -type f -name "*.ipk") ./artifact/package/
+        cp -rf $(find /home/runner/immortalwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        tree ./artifact/
+        
+    - name: Deliver buildinfo
+      uses: actions/upload-artifact@v2
+      with:
+        name: OpenWrt_buildinfo
+        path: /home/runner/artifact/buildinfo/
 
+    - name: Deliver package
+      uses: actions/upload-artifact@v2
+      with:
+        name: OpenWrt_package
+        path: /home/runner/artifact/package/
+
+    - name: Deliver firmware
+      uses: actions/upload-artifact@v2
+      with:
+        name: OpenWrt_firmware
+        path:  /home/runner/immortalwrt/bin/targets/
+        
     - name: Generate release tag
 #       if: ${{ success() }}
       id: tag
