@@ -82,7 +82,7 @@ jobs:
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
         sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
         ls -lah /home/runner/hwl/
-        tree /home/runner/hwl/
+        md5sum /home/runner/hwl/*
         echo "::set-output name=status::success"
     - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
       id: Rebuild
@@ -98,15 +98,15 @@ jobs:
         ./scripts/feeds install -a
         make defconfig
         make -j8 download
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
         make -j1 V=s
         sudo egrep -v '^$|#' bin/targets/rockchip/armv8/config.buildinfo
         sudo cp bin/targets/rockchip/armv8/immortalwrt* /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*.buildinfo /home/runner/hwl/
         sudo cp bin/targets/rockchip/armv8/*sha256sums* /home/runner/hwl/
         sudo zip -r  /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
-        ls -lah /home/runner/R2S* 
         ls -lah /home/runner/hwl/
-        tree /home/runner/hwl/
         md5sum /home/runner/hwl/*
         echo "::set-output name=status::success"
 
@@ -114,7 +114,7 @@ jobs:
       if: ${{ success() }}
       id: tag
       run: |
-        echo "::set-output name=release_tag::$(date +"%F_%H%M%S")-R2S-Minimal_1806"
+        echo "::set-output name=release_tag::$(date +"%F_%H%M%S")_R2S-Minimal_1806"
         echo "::set-output name=release_date::$(date +"%F_%H%M%S")"
         touch release.txt
         echo "::set-output name=status::success"
