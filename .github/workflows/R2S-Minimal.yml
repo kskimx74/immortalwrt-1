@@ -1,4 +1,4 @@
-name: R2S-Minimal
+name: R2S-Minimal.
 
 on:
   repository_dispatch:
