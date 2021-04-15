@@ -39,30 +39,31 @@ jobs:
       run: |
         echo "now":$(date +%F_%H%M%S)
         df -hP
-        sudo mkdir -p /home/runner/hwl
+        hwl
         cd "/home/runner"
-        mkdir -pv  artifact/{firmware,package,buildinfo}
+        mkdir -pv {artifact,hwl}/
+        mkdir -pv artifact/{firmware,package,buildinfo}
         sudo chown -R runner:runner  artifact/
         sudo chown -R runner:runner hwl/ 
         ls -lh ./
         ls -lhR artifact/
         git clone --branch "openwrt-18.06-k5.4" --single-branch "https://github.com/immortalwrt/immortalwrt" "immortalwrt"
-        cp -f "${GITHUB_WORKSPACE}/configs/egrep_x86_x64.config" "/home/runner/immortalwrt/.config"
+        #cp -f "${GITHUB_WORKSPACE}/configs/egrep_x86_x64.config" "/home/runner/immortalwrt/.config"
         sudo chown -R runner:runner "immortalwrt"
         cd "/home/runner/immortalwrt"
         sudo sed -i 's/192.168.1.1/192.168.6.254/g' package/base-files/files/bin/config_generate
         cat -n package/base-files/files/bin/config_generate
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        make defconfig
         
-#     - name: Start SSH via tmate
-#       uses: P3TERX/ssh2actions@main
-#       # Send connection info to Telegram (optional)
-#       # You can find related documents here: https://core.telegram.org/bo ts
-#       env:
-#         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-#         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        
+    - name: Start SSH via tmate
+      uses: P3TERX/ssh2actions@main
+      # Send connection info to Telegram (optional)
+      # You can find related documents here: https://core.telegram.org/bo ts
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
     - name: Build ImmortalWrt-18.06
       id: build
@@ -76,6 +77,7 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+        make defconfig
         make -j$[$(nproc)+1]
         df -hP
         tree bin/targets/*
@@ -96,25 +98,28 @@ jobs:
 #         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 #         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
-    - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
-      if: failure()
-      run: |
-        cd /home/runner/hwl/
-        sudo rm -rf ./*
-        cd "/home/runner/immortalwrt"
-        sudo rm -f .config
-        cp -f "${GITHUB_WORKSPACE}/configs/egrep_x86_x64.config" "/home/runner/immortalwrt/.config"
-        make -j1 V=s
-        tree bin/*
-        ls -lha bin/targets/x86/64  
-        cat bin/targets/x86/64/config.buildinfo
-        cd "/home/runner/immortalwrt"
-        sudo zip -r /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
-        sudo cp bin/targets/x86/64/immortalwrt-x86-64-* /home/runner/hwl/
-        sudo cp bin/targets/x86/64/*.buildinfo /home/runner/hwl/
-        sudo cp bin/targets/x86/64/*sha256sums* /home/runner/hwl/
-        ls -lha /home/runner/hwl/
-        md5sum /home/runner/hwl/*
+#     - name: Rebuild ImmortalWrt-18.06 to Collect Error Log
+#       if: failure()
+#       run: |
+#         cd /home/runner/hwl/
+#         sudo rm -rf ./*
+#         cd "/home/runner/immortalwrt"
+#         make download -j8        
+#         find dl -size -1024c -exec ls -l {} \;
+#         find dl -size -1024c -exec rm -f {} \;
+#         sudo rm -f .config
+#         #cp -f "${GITHUB_WORKSPACE}/configs/egrep_x86_x64.config" "/home/runner/immortalwrt/.config"
+#         make -j1 V=s
+#         tree bin/*
+#         ls -lha bin/targets/x86/64  
+#         cat bin/targets/x86/64/config.buildinfo
+#         cd "/home/runner/immortalwrt"
+#         sudo zip -r /home/runner/hwl/packages_$(date +%F_%H%M%S).zip  bin/
+#         sudo cp bin/targets/x86/64/immortalwrt-x86-64-* /home/runner/hwl/
+#         sudo cp bin/targets/x86/64/*.buildinfo /home/runner/hwl/
+#         sudo cp bin/targets/x86/64/*sha256sums* /home/runner/hwl/
+#         ls -lha /home/runner/hwl/
+#         md5sum /home/runner/hwl/*
         
     - name: Prepare artifact
       run: |
